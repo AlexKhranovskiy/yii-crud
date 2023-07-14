@@ -1,0 +1,3 @@
+window.deleteAuthor = function(url){
+};
+

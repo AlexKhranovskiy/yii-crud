@@ -3,7 +3,8 @@
 namespace app\controllers;
 
 use app\models\Author;
-use app\models\SearchAuthors;
+use app\models\AuthorBook;
+use app\models\Book;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -38,13 +39,32 @@ class AuthorsController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new SearchAuthors();
-        $dataProvider = $searchModel->search($this->request->queryParams);
-
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+        $authors = Author::find()->all();
+        //var_dump($authors);
+//        $authors = Author::find()->one()->getAuthorsBooks()->with('book_id')->all();
+//        $authors = Author::find()
+//            ->innerJoinWith('authors_books')
+//            ->innerJoinWith('books')
+//            ->all();
+//
+//        echo '<pre>';
+//        var_dump($authors);
+//        echo '</pre>';
+//        exit;
+//        $searchModel = new SearchAuthors();
+//        $dataProvider = $searchModel->search($this->request->queryParams);
+//
+//        return $this->render('index', [
+////            'authors' => $authors,
+////            'searchModel' => $searchModel,
+////            'dataProvider' => $dataProvider,
+////        ]);
+        return $this->render(
+            'index',
+            [
+                'authors' => $authors
+            ]
+        );
     }
 
     /**
@@ -55,9 +75,12 @@ class AuthorsController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        return $this->render(
+            'view',
+            [
+                'model' => $this->findModel($id),
+            ]
+        );
     }
 
     /**
@@ -67,19 +90,29 @@ class AuthorsController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Author();
-
+        $author = new Author();
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+            if ($author->load($this->request->post()) && $author->save()) {
+                foreach ($this->request->post()['books'] as $book) {
+                    $authorBook = new AuthorBook();
+                    $authorBook->author_id = $author->id;
+                    $authorBook->book_id = $book;
+                    $authorBook->save();
+                }
+                return $this->redirect('/authors');
             }
         } else {
-            $model->loadDefaultValues();
+            $author->loadDefaultValues();
         }
 
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+        return $this->render(
+            'create',
+            [
+                'model' => $author,
+                'list' => (new Book)::find()->asArray()->all(),
+                'selectedBookIds' => null
+            ]
+        );
     }
 
     /**
@@ -91,15 +124,32 @@ class AuthorsController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $author = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($this->request->isPost && $author->load($this->request->post()) && $author->save()) {
+            AuthorBook::deleteAll(['in', 'author_id', $author->id]);
+            if (!empty($this->request->post()['books'])) {
+                foreach ($this->request->post()['books'] as $book) {
+                    $authorBook = new AuthorBook();
+                    $authorBook->author_id = $author->id;
+                    $authorBook->book_id = $book;
+                    $authorBook->save();
+                }
+            }
+            return $this->redirect(['index']);
         }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+        $selectedBookIds = [];
+        foreach ($author->authorsBooks as $authorsBook) {
+            $selectedBookIds[] = (!is_null($authorsBook->book)) ? $authorsBook->book->id : null;
+        }
+        return $this->render(
+            'update',
+            [
+                'model' => $author,
+                'list' => (new Book)::find()->asArray()->all(),
+                'selectedBookIds' => $selectedBookIds
+            ]
+        );
     }
 
     /**
