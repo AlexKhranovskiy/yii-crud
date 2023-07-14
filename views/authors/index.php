@@ -19,26 +19,15 @@ $this->params['breadcrumbs'][] = $this->title;
             <th scope="col">#</th>
             <th scope="col">Name</th>
             <th scope="col">Email</th>
-            <th scope="col">Action</th>
         </tr>
         </thead>
         <tbody>
         <?php /** @var $authors */ ?>
         <?php foreach ($authors as $author): ?>
             <tr>
-                <th scope="row"><?= Html::a($author->id, Url::toRoute(['/authors/update', 'id' => $author->id])) ?></th>
+                <th scope="row"><?= Html::a($author->id, Url::toRoute(['/authors/view', 'id' => $author->id])) ?></th>
                 <td><?= $author->name ?></td>
                 <td><?= $author->email ?></td>
-                <td>
-                    <div class="btn-group" role="group" aria-label="Basic example">
-                        <?= Html::a('Edit', Url::toRoute(['/authors/update', 'id' => $author->id]),['class' =>'btn btn-outline-success btn-sm']) ?>
-                        <?= Html::a('Delete', ['authors/delete', 'id' => $author->id], [
-                            'class' => 'btn btn-outline-danger btn-sm',
-                            'data-confirm' => 'Are you sure you want to remove the author?',
-                            'data-method' => 'post',
-                        ]) ?>
-                    </div>
-                </td>
             </tr>
         <?php endforeach; ?>
         <tr>

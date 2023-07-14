@@ -93,11 +93,13 @@ class AuthorsController extends Controller
         $author = new Author();
         if ($this->request->isPost) {
             if ($author->load($this->request->post()) && $author->save()) {
-                foreach ($this->request->post()['books'] as $book) {
-                    $authorBook = new AuthorBook();
-                    $authorBook->author_id = $author->id;
-                    $authorBook->book_id = $book;
-                    $authorBook->save();
+                if (!empty($this->request->post()['books'])) {
+                    foreach ($this->request->post()['books'] as $book) {
+                        $authorBook = new AuthorBook();
+                        $authorBook->author_id = $author->id;
+                        $authorBook->book_id = $book;
+                        $authorBook->save();
+                    }
                 }
                 return $this->redirect('/authors');
             }

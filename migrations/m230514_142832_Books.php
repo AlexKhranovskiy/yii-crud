@@ -7,26 +7,6 @@ use yii\db\Migration;
  */
 class m230514_142832_Books extends Migration
 {
-//    /**
-//     * {@inheritdoc}
-//     */
-//    public function safeUp()
-//    {
-//
-//    }
-//
-//    /**
-//     * {@inheritdoc}
-//     */
-//    public function safeDown()
-//    {
-//        echo "m230514_142832_Books cannot be reverted.\n";
-//
-//        return false;
-//    }
-
-
-    // Use up()/down() to run migration code without a transaction.
     public function up()
     {
         $this->createTable(
