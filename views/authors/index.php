@@ -13,31 +13,34 @@ use yii\grid\GridView;
 $this->title = 'Authors';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Email</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php /** @var $authors */ ?>
-        <?php foreach ($authors as $author): ?>
-            <tr>
-                <th scope="row"><?= Html::a($author->id, Url::toRoute(['/authors/view', 'id' => $author->id])) ?></th>
-                <td><?= $author->name ?></td>
-                <td><?= $author->email ?></td>
-            </tr>
-        <?php endforeach; ?>
-        <tr>
-            <td>
-                <?= Html::a('New', '/authors/create', ['class' => 'btn btn-primary btn-sm']) ?>
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        </tbody>
-    </table>
-<?php //$this->registerJsFile('@web/js/author.js')?>
+<div class="author-index">
+
+    <h1><?= Html::encode($this->title) ?></h1>
+
+    <p>
+        <?= Html::a('Create Author', ['create'], ['class' => 'btn btn-success btn-sm']) ?>
+    </p>
+
+    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+
+    <?= GridView::widget([
+                             'dataProvider' => $dataProvider,
+                             'filterModel' => $searchModel,
+                             'columns' => [
+                                 ['class' => 'yii\grid\SerialColumn'],
+
+                                 'id',
+                                 'name',
+                                 'email:email',
+                                 [
+                                     'class' => ActionColumn::className(),
+                                     'urlCreator' => function ($action, Author $model, $key, $index, $column) {
+                                         return Url::toRoute([$action, 'id' => $model->id]);
+                                     }
+                                 ],
+                             ],
+                         ]); ?>
+
+
+</div>
+

@@ -4,16 +4,14 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var app\models\Author $model */
+/** @var app\models\Book $model */
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Authors', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Books', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-$authorsBooks = $model->authorsBooks;
-
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="author-view">
+<div class="book-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -33,18 +31,8 @@ $authorsBooks = $model->authorsBooks;
         'attributes' => [
             'id',
             'name',
-            'email:email',
+            'date',
         ],
     ]) ?>
-    <h6>Books: </h6>
-    <?php foreach($authorsBooks as $authorBook): ?>
-    <?php if(is_null($authorBook->book)) continue; ?>
-    <?= DetailView::widget([
-                               'model' => $authorBook->book,
-                               'attributes' => [
-                                   'name',
-                                   'date'
-                               ],
-                           ]) ?>
-    <?php endforeach; ?>
+
 </div>

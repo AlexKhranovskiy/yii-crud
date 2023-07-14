@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\Author;
 use app\models\AuthorBook;
 use app\models\Book;
+use app\models\SearchAuthors;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -51,20 +52,20 @@ class AuthorsController extends Controller
 //        var_dump($authors);
 //        echo '</pre>';
 //        exit;
-//        $searchModel = new SearchAuthors();
-//        $dataProvider = $searchModel->search($this->request->queryParams);
+        $searchModel = new SearchAuthors();
+        $dataProvider = $searchModel->search($this->request->queryParams);
 //
-//        return $this->render('index', [
-////            'authors' => $authors,
-////            'searchModel' => $searchModel,
-////            'dataProvider' => $dataProvider,
-////        ]);
-        return $this->render(
-            'index',
-            [
-                'authors' => $authors
-            ]
-        );
+        return $this->render('index', [
+            'authors' => $authors,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+//        return $this->render(
+//            'index',
+//            [
+//                'authors' => $authors
+//            ]
+//        );
     }
 
     /**
@@ -79,6 +80,7 @@ class AuthorsController extends Controller
             'view',
             [
                 'model' => $this->findModel($id),
+
             ]
         );
     }
