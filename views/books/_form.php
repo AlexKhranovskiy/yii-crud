@@ -19,11 +19,7 @@ use yii\widgets\ActiveForm;
         ]
     ) ?>
 
-    <?= $form->field($model, 'date')->textInput(
-        [
-            'class' => 'form-control form-control-sm'
-        ]
-    ) ?>
+    <?= $form->field($model, 'date')->textInput(['type' => 'date']) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success mt-2']) ?>
